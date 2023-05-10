@@ -1,0 +1,96 @@
+<?php
+
+@include 'config.php';
+
+if(isset($_POST['submit'])){
+
+   $name = mysqli_real_escape_string($conn, $_POST['name']);
+   $email = mysqli_real_escape_string($conn, $_POST['email']);
+   $pass = md5($_POST['password']);
+   $cpass = md5($_POST['cpassword']);
+
+   $select = " SELECT * FROM register_form WHERE email = '$email' && password = '$pass' ";
+
+   $result = mysqli_query($conn, $select);
+
+   if(mysqli_num_rows($result) > 0){
+
+      $error[] = 'user already exist!';
+
+   }else{
+
+      if($pass != $cpass){
+         $error[] = 'password not matched!';
+      }else{
+         $insert = "INSERT INTO register_form(name, email, password) VALUES('$name','$email','$pass')";
+         mysqli_query($conn, $insert);
+         header('location:register_form.php');
+      }
+   }
+
+};
+
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <link rel="stylesheet" href="./css/style.css">
+   <title>HASH TECHIE OFFICIAL</title>
+</head>
+<body>
+<section>
+   <div class="form-box2">
+      <div class="form-value">
+
+
+         <form action="" method="post">
+      <h2>Register</h2>
+      <?php
+      if(isset($error)){
+         foreach($error as $error){
+            echo '<span class="error-msg">'.$error.'</span>';
+         };
+      };
+      ?>
+            <div class="inputbox">
+               <input type="text" name="name" required>
+               <label for="">Enter your Name</label>
+            </div>
+
+
+
+            <div class="inputbox">
+               <ion-icon name="mail-outline"></ion-icon>
+               <input type="email"  name="email" required>
+               <label for="">Enter your Email</label>
+            </div>
+
+            <div class="inputbox">
+               <ion-icon name="lock-closed-outline"></ion-icon>
+               <input type="password"  name="password" required>
+               <label for="">Enter your Password</label>
+            </div>
+
+            <div class="inputbox">
+               <ion-icon name="lock-closed-outline"></ion-icon>
+               <input type="password" name="cpassword" required>
+               <label for="">Confirm your Password</label>
+            </div>
+
+            <button><input type="submit" name="submit" value="Register" class="form-btn"></button>
+      <p>already have an account? <a href="login_form.php">login now</a></p>
+
+         </form>
+      </div>
+   </div>
+</section>
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
+
+
+
+
